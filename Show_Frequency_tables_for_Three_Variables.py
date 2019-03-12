@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#Run my first program and show the frequency table for three variables of my dataset 
+#Run my first program and show the frequency tables for three variables of my dataset 
 #Author: Chen, Yiyi
 #Date: 2019-03-12
 import numpy as np
