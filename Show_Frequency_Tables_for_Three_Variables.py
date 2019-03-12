@@ -1,3 +1,8 @@
+#!/usr/bin/python
+#Homework for Week2
+#Run my first program and show the frequency tables for three variables of my dataset
+#Author: Chen, yiyi
+#Date: 2019-03-12
 
 import numpy as np
 import pandas as pd
