@@ -1,8 +1,4 @@
-#!/usr/bin/python
-#Run my first program and show the frequency tables for three variables of my dataset 
-#Homework for Week2
-#Author: Chen, Yiyi
-#Date: 2019-03-12
+
 import numpy as np
 import pandas as pd
 
@@ -12,7 +8,7 @@ filePath = 'marscrater_pds.csv'
 marscrater = pd.read_csv(filePath,low_memory = False) 
 pd.set_option('display.float_format', lambda x:'%f'%x) #display setting
 pd.set_option('display.height',1000)
-pd.set_option('display.max_rows',500)
+pd.set_option('display.max_rows',20)
 pd.set_option('display.max_columns',500)
 pd.set_option('display.width',1000)
 
@@ -154,7 +150,7 @@ num_layer1_ft['Frequency Missing ='] = num_layer_c-num_layer1_c
 #compute total number for every column
 num_layer1_ft.loc['Total'] = num_layer1_ft.sum(axis=0)
 print 'Frequency table for number layers'
-print num_layer1_ft[num_layer1_ft.shape[0]-5:]
+print num_layer1_ft
 
 #diam1 is the diameter data after selecting conditions
 diam1 = sub2["DIAM_CIRCLE_IMAGE"]
@@ -166,9 +162,10 @@ diam1_p = diam1.value_counts(sort = False, normalize =  True)
 diam1_ft = pd.DataFrame({'Frequency':diam1_c,'Percentage':diam1_p,'Cumulative Frequency':diam_c,'Cumulative Percentage':diam_p})
 diam1_ft['Frequency Missing ='] = diam_c-diam1_c
 #compute total number for every column
+diam1_ft.sort_values('Cumulative Frequency',inplace = True)
 diam1_ft.loc['Total'] = diam1_ft.sum(axis=0)
 print 'Frequency table for diameter'
-print diam1_ft[diam1_ft.shape[0]-5:]
+print diam1_ft
  
 depth1 = sub2["DEPTH_RIMFLOOR_TOPOG"]
 depth1_c = depth1.value_counts(sort = False)
@@ -180,6 +177,7 @@ depth1_p = depth1.value_counts(sort = False, normalize = True)
 depth1_ft = pd.DataFrame({'Frequency':depth1_c,'Percentage':depth1_p,'Cumulative Frequency':depth_c,'Cumulative Percentage':depth_p})
 depth1_ft['Frequency Missing ='] = depth_c-depth1_c
 #compute total number for every column
+depth1_ft.sort_values('Cumulative Frequency',inplace = True)
 depth1_ft.loc['Total'] = depth1_ft.sum(axis=0)
 print 'Frequency table for depth'
-print depth1_ft[depth1_ft.shape[0]-5:]
+print depth1_ft
