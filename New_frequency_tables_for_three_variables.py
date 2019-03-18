@@ -1,5 +1,10 @@
 
 #!/usr/bin/python 
+#Homework for Week2
+#Making Data Management Decisions
+#Author: Chen, yiyi
+#Date: 2019-03-18
+
 import numpy as np
 import pandas as pd
 
