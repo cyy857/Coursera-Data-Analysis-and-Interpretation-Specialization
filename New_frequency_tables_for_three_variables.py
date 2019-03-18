@@ -1,4 +1,3 @@
-
 #!/usr/bin/python 
 #Homework for Week2
 #Making Data Management Decisions
