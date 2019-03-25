@@ -1,0 +1,150 @@
+#!/usr/bin/python 
+#Homework for Week4
+#Creating graphs for my data: Mars Craters
+#Author: Chen, yiyi
+#Date: 2019-03-25
+
+import numpy as np
+import pandas as pd
+import seaborn
+import matplotlib.pyplot as plt
+
+#call in my dataset: Mars crater dataset 
+filePath = 'marscrater_pds.csv'
+marscrater = pd.read_csv(filePath,low_memory = False) 
+
+#display setting
+pd.set_option('display.float_format', lambda x:'%f'%x) 
+pd.set_option('display.height',1000)
+pd.set_option('display.max_rows',20)
+pd.set_option('display.max_columns',500)
+pd.set_option('display.width',1000)
+
+#data management
+print (len(marscrater)) #number of observations (rows)
+print (len(marscrater.columns)) # number of variables (columns)
+
+#upper-case all DataFrame column names 
+marscrater.columns = map(str.upper,marscrater.columns)
+sub3 = marscrater.copy()
+
+#data management for layer number
+#if layer_number = 0. set it to be NaN
+sub3['NUMBER_LAYERS'] = sub3['NUMBER_LAYERS'].replace([0],np.nan)
+
+num_layer_freq = sub3['NUMBER_LAYERS'].value_counts(sort = False, dropna = False)
+num_layer_perc = 100*sub3['NUMBER_LAYERS'].value_counts(sort = False, normalize = True,dropna = False)
+
+#data management for diameter
+#create asecondary variables area 
+sub3['AREA'] = np.power(sub3['DIAM_CIRCLE_IMAGE'],2) * np.pi / 4.0
+max_area = max(sub3['AREA'])
+
+def area_scale(row):
+    if row['AREA'] < max_area *0.0005:
+        return 1
+    if row['AREA'] < max_area *0.001:
+        return 2
+    if row['AREA'] < max_area *0.015:
+        return 3
+    if row['AREA'] < max_area *0.020:
+        return 4
+    if row['AREA'] < max_area *0.025:
+        return 5
+    if row['AREA'] < max_area *0.03:
+        return 6
+    if row['AREA'] < max_area *0.04:
+        return 7
+    if row['AREA'] < max_area *0.06:
+        return 8
+    if row['AREA'] < max_area *0.08:
+        return 9
+    if row['AREA'] < max_area *0.1:
+        return 10
+
+sub3['area_scale'] = sub3.apply(lambda row:area_scale (row), axis =1)
+
+area_scale_freq= sub3['area_scale'].value_counts(sort = False)
+area_scale_perc = 100*sub3['area_scale'].value_counts(sort = False, normalize = True)
+
+#data management for depth
+sub3['depth'] = sub3['DEPTH_RIMFLOOR_TOPOG']
+max_depth = max(sub3['depth'])
+def depth_scale(row):
+    if row['depth'] < 0.05:
+        return 1
+    if row['depth'] < 0.2:
+        return 2
+    if row['depth'] < 0.4:
+        return 3
+    if row['depth'] < 0.7:
+        return 4
+    if row['depth'] < 1.0:
+        return 5
+    if row['depth'] < 1.3:
+        return 6
+    if row['depth'] < 1.6:
+        return 7
+    if row['depth'] < 1.9:
+        return 8
+    if row['depth'] < 2.2:
+        return 9
+    if row['depth'] < max_depth:
+        return 10
+
+sub3['depth_scale'] = sub3.apply(lambda row:depth_scale (row), axis =1)
+
+depth_scale_freq= sub3['depth_scale'].value_counts(sort = False)
+depth_scale_perc = 100*sub3['depth_scale'].value_counts(sort = False, normalize = True)
+
+#subset data to whose attribution of "morphology ejecta *" is not a  null string
+null_s = ' '
+newData=sub3[(sub3["MORPHOLOGY_EJECTA_1"]>null_s)|(sub3["MORPHOLOGY_EJECTA_2"]>null_s)|(sub3["MORPHOLOGY_EJECTA_3"]>null_s)]
+
+#create graths for variables
+s = newData[newData['DEPTH_RIMFLOOR_TOPOG']>0]
+
+#plot depth
+desc_depth= s["DEPTH_RIMFLOOR_TOPOG"].describe()
+print(desc_depth)
+seaborn.distplot(s['DEPTH_RIMFLOOR_TOPOG'].dropna(), kde=False)
+plt.xlabel('Depth for Mars craters')
+plt.ylabel('Counts for Mars craters depth')
+
+#plot area
+desc_area= s["AREA"].describe()
+print(desc_area)
+seaborn.distplot(s['AREA'].dropna(), kde=False)
+plt.xlabel('Area for Mars craters')
+plt.ylabel('Counts for Mars craters area')
+
+#create univariate graphs for three variables
+desc_number_layer = s['number_layer'].describe()
+print(desc_number_layer)
+seaborn.countplot(x='NUMBER_LAYERS', data=s)
+plt.xlabel('Number_layer for Mars craters')
+plt.ylabel('Count for  number_layers')
+
+desc_depth_scale = s['depth_scale'].describe() 
+print(desc_depth_scale)
+seaborn.countplot(x='depth_scale', data=s)
+plt.xlabel('Depth_scale for Mars craters')
+plt.ylabel('Count for depth_scales ')
+
+desc_area_scale = s['area_scale'].describe()
+print(desc_area_scale)
+seaborn.countplot(x='area_scale', data=s)
+plt.xlabel('Area_scale for Mars craters')
+plt.ylabel('Count for area_scales ')
+
+#create bivariate graphs
+seaborn.factorplot(x='depth_scale', y='NUMBER_LAYERS', data=s, kind='bar',ci=None)
+plt.xlabel('Depth_scale for Mars craters')
+plt.ylabel('Number of layers for Mars craters')
+
+seaborn.factorplot(x='area_scale', y='NUMBER_LAYERS', data=s, kind='bar',ci=None)
+plt.xlabel('Area_scale for Mars craters')
+plt.ylabel('Number of layers for Mars craters')
+
+
+
